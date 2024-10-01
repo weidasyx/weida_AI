@@ -1,0 +1,195 @@
+# Example 01a: Linear Regression with scikit-learn
+# Description: Predicting house prices using linear regression.
+# Explanation: Fits a linear regression model to predict housing prices based on median income,
+# using the California Housing dataset loaded via scikit-learn.
+
+from sklearn.datasets import fetch_california_housing
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+# Load dataset
+# Column names: MedInc, HouseAge, AveRooms, AveBedrms, Population, AveOccup, Latitude, Longitude
+housing = fetch_california_housing()
+X = housing.data[:, [0]]  # Use 'MedInc' feature
+y = housing.target
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+# Create and train model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Predict
+y_pred = model.predict(X_test)
+
+y_test[:10], y_pred[:10]
+
+
+
+
+
+
+# Example 01a: Linear Regression with scikit-learn
+# Description: Predicting house prices using linear regression.
+# Explanation: Fits a linear regression model to predict housing prices based on median income,
+# using the California Housing dataset loaded via scikit-learn.
+
+from sklearn.datasets import fetch_california_housing
+from sklearn.svm import SVR
+from sklearn.model_selection import train_test_split
+
+# Load dataset
+# Column names: MedInc, HouseAge, AveRooms, AveBedrms, Population, AveOccup, Latitude, Longitude
+housing = fetch_california_housing()
+X = housing.data[:, :]  # Use 'MedInc' feature
+y = housing.target
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+# Create and train model
+model = SVR()
+model.fit(X_train, y_train)
+
+# Predict
+y_pred = model.predict(X_test)
+
+y_test[:10], y_pred[:10]
+
+
+
+# Example 01b: Linear Regression with Visualization
+# Description: Predicting house prices and visualizing the regression line.
+# Explanation: Extends Example 01a by plotting the regression line and test data using matplotlib.
+
+import matplotlib.pyplot as plt
+
+# Plot test data points
+plt.scatter(X_test, y_test, color='blue', label='Actual Prices')
+
+# Plot regression line
+plt.plot(X_test, y_pred, color='red', linewidth=2, label='Predicted Prices')
+
+plt.xlabel('Median Income')
+plt.ylabel('House Price')
+plt.title('Linear Regression on California Housing Dataset')
+plt.legend()
+plt.show()
+
+
+
+# Example 02a: K-Nearest Neighbors Classification
+# Description: Classifying iris species using KNN.
+# Explanation: Uses KNN to classify iris species based on measurements, using the Iris dataset loaded via scikit-learn.
+
+from sklearn.datasets import load_iris
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+
+# Load dataset
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+# Create and train model
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(X_train, y_train)
+
+# Predict
+y_pred = knn.predict(X_test)
+
+
+
+# Example 02b: KNN Classification with Visualization
+# Description: Classifying wine types and visualizing decision boundaries.
+# Explanation: Uses KNN to classify wine types from the Wine dataset and visualizes decision boundaries using seaborn.
+
+from sklearn.datasets import load_wine
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.model_selection import train_test_split
+import seaborn as sns
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Load dataset
+wine = load_wine()
+X = wine.data[:, :2]  # Use first two features for visualization
+y = wine.target
+
+# Split data
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=42)
+
+# Create and train model
+knn = KNeighborsClassifier(n_neighbors=3)
+knn.fit(X_train, y_train)
+
+# Create mesh grid for plotting decision boundaries
+h = .1  # step size
+x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
+y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
+xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
+                     np.arange(y_min, y_max, h))
+
+# Predict on mesh grid
+Z = knn.predict(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+# Plot decision boundaries
+plt.figure(figsize=(8, 6))
+plt.contourf(xx, yy, Z, alpha=0.3)
+sns.scatterplot(x=X[:, 0], y=X[:, 1], hue=y, palette='Set1', edgecolor='k')
+plt.xlabel(wine.feature_names[0])
+plt.ylabel(wine.feature_names[1])
+plt.title('KNN Classification on Wine Dataset')
+plt.show()
+
+
+
+
+import numpy as np
+data=np.loadtxt("BP_d.txt",delimiter=";",skiprows=1,usecols=1)
+
+
+train_data=data[:20000]
+test_data=data[20000:25000]
+X_train=[train_data[i:i+10] for i in range(len(train_data)-10)]
+y_train=[train_data[i+10] for i in range(len(train_data)-10)]
+X_test=[test_data[i:i+10] for i in range(len(test_data)-10)]
+y_test=[test_data[i+10] for i in range(len(test_data)-10)]
+
+
+
+
+from sklearn.linear_model import Ridge, Lasso
+
+y_pred_dummy=[X[-1] for X in X_test]
+print('dummy:',mean_squared_error(y_test,y_pred_dummy), mean_absolute_error(y_test,y_pred_dummy))
+
+for regression in [Ridge, Lasso]:
+  reg = regression()
+  reg.fit(X_train,y_train)
+  y_pred=reg.predict(X_test)
+  print('regression:',regression.__name__, mean_squared_error(y_test,y_pred), mean_absolute_error(y_test,y_pred))
+
+
+
+from sklearn.metrics import mean_squared_error, mean_absolute_error
+print('regression:',mean_squared_error(y_test,y_pred), mean_absolute_error(y_test,y_pred))
+print('dummy:',mean_squared_error(y_test,y_pred_dummy), mean_absolute_error(y_test,y_pred_dummy))
+
+
+
+
+from matplotlib import pyplot as plt
+plt.plot(y_test[:100], "g.",label='actual')
+plt.plot(y_pred[:100], "b.",label='predicted')
+plt.plot(y_pred_dummy[:100], "r.",label='dummy')
+plt.legend()
+
+
+
+
